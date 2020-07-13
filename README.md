@@ -10,8 +10,8 @@ Logs PIR data to [Adafruit.io](https://io.adafruit.com/).
 
 ## Wiring
 
-| LoPy                                      | Transmitter   |
+| LoPy                                      | PIR Sensor    |
 | :---------------------------------------- | :------------ |
-| `G10` (or any pin specified in config.py)  | `Data`        |
-| `3.3V`                                    | `VCC`         |
+| `G10` (or any pin specified in config.py) | `Data`        |
+| `Vin`                                     | `VCC`         |
 | `GND`                                     | `GND`         |
