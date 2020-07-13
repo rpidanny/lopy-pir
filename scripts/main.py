@@ -5,51 +5,43 @@ from machine import WDT
 from network import WLAN
 
 from mqtt import MQTTClient
-from proove import Proove
+from pir import Pir
 
-from config import known_nets, gpio_config, mqtt_config
+from config import known_nets, pir_config, adafruit
 from util.wifi import connect_wifi
 
-wdt = WDT(timeout=2000)
+wdt = WDT(timeout=7000)
 
 wl = WLAN()
 
-# TODO: Generate unique random Client ID
-client = MQTTClient("lopy-proove",
-                    server=mqtt_config['host'],
-                    port=mqtt_config['port'])
+client = MQTTClient("lopy-pir",
+                    "io.adafruit.com",
+                    user=adafruit['user'],
+                    password=adafruit['apikey'],
+                    port=1883)
 
-
-def on_message(topic, msg):
-    print(" [+] " + str(topic) + " " + str(msg))
-
-    payload = msg.decode('utf-8')
-
-    data = json.loads(payload)
-
-    proove_remote.transmit(state=data['on'],
-                           channel=data['channel'],
-                           device_id=data['deviceId'],
-                           transmitter_id=data['transmitterId'])
-
+last_time = time.time()
 
 if __name__ == "__main__":
-    proove_remote = Proove(gpio_config['tx_pin'])
-
-    client.set_callback(on_message)
+    pir = Pir(pir_config['input_pin'])
 
     client.connect()
 
-    client.subscribe(topic=mqtt_config['subscription_topic'])
-
-    print(' [*] Waiting for messages...')
+    print(' [*] Starting PIR Monitoring...')
     while True:
         try:
             client.check_msg()
-        except:
-            print(' [-] Failed to ping....')
+            # print("Logging PIR State: " + str(pir.get_status()))
+            if time.time() - last_time > pir_config['update_interval']:
+                print("Logging PIR State: " + str(pir.get_status()))
+                client.publish(topic=adafruit['user'] + "/feeds/lopy_pir",
+                               msg=str(pir.get_status()))
+                last_time = time.time()
+        except Exception as e:
+            print(' [-] Failed to publish data....')
             print(' [*] Reconnecting to WIFI / MQTT.')
+            print(e)
             connect_wifi(known_nets)
             client.connect()
         wdt.feed()
-        time.sleep(0.1)
+        time.sleep(1)

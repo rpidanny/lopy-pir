@@ -1,6 +1,6 @@
-# LoPy Proove
+# LoPy PIR
 
-Interface with `Proove`/`Anslut`/`Nexa`/`Telldus` remote switches using [LoPy](https://pycom.io) and cheap [433Mhz RF Transmitter](https://www.aliexpress.com/item/32763193655.html).
+Logging PIR data to Adafruit.io
 
 ## Usage
 
@@ -10,16 +10,6 @@ Interface with `Proove`/`Anslut`/`Nexa`/`Telldus` remote switches using [LoPy](h
 
 The device subscribes to a MQTT topic specified in `scripts/config.py`.
 
-To control the switches, send `JSON String` as message to the topic with the following template:
-
-```json
-{
-  "on": true,
-  "channel": 2,
-  "deviceId": 1,
-  "transmitter_id": 312312
-}
-```
 
 ## Wiring
 

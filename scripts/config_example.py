@@ -8,12 +8,12 @@ known_nets = {
     },  # (ip, subnet_mask, gateway, DNS_server)
 }
 
-gpio_config = {
-    'tx_pin': 'P9'
+pir_config = {
+    'input_pin': 'G10',
+    'update_interval': 10
 }
 
-mqtt_config = {
-    'host': '192.168.2.10',
-    'port': 1883,
-    'subscription_topic': '/control/devices/proove'
+adafruit = {
+    'user': '<your_username',
+    'apikey': '<your_apikey>',
 }
